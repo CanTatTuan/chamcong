@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng chấm công</title>
+    <link rel="shortcut icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtos_cQ1skjOq1pncEQFTj7fglhDSCF5OUIA&s">
+    <title>BCC-Giantsun</title>
     <style>
         body, html {
             margin: 0;
@@ -293,7 +294,7 @@
                         if (overtimeHours === '8' || overtimeHours === '9') {
                             const overtimeDiv = document.createElement('div');
                             overtimeDiv.classList.add('overtime-hours');
-                            overtimeDiv.textContent = `Tăng ca: ${overtimeHours}h`;
+                            overtimeDiv.textContent = `Tc: ${overtimeHours}h`;
                             dayDiv.appendChild(overtimeDiv);
                             localStorage.setItem(`${dayKey}-overtime`, overtimeHours);
                         } else {
