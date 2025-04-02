@@ -43,15 +43,17 @@
         }
 
         .day {
-            padding: 16px;
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            position: relative;
-        }
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    position: relative;
+    max-height: 80px; /* Giới hạn chiều cao */
+    overflow: auto; /* Cho phép cuộn khi nội dung vượt quá chiều cao */
+}
 
         .day:hover {
             background-color: #f1f1f1;
@@ -98,15 +100,15 @@
         }
 
         .overtime-hours {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            font-size: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 2px 5px;
-            border-radius: 3px;
-        }
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
 
         .modal {
             display: none;
@@ -246,7 +248,7 @@
         .btn-darkmode {
             display: inline-flex;
             align-items: center;
-            background-color: #5e9ee3;
+            background-color: #007bff;
             color: white;
             padding: 10px 20px;
             border-radius: 6px;
@@ -264,7 +266,7 @@
         .lock-status{
             display: inline-flex;
             align-items: center;
-            background-color: gray;
+            background-color: #007bff;
             color: white;
             padding: 10px 20px;
             border-radius: 6px;
@@ -304,6 +306,8 @@
                 <li><strong>Màu xám:</strong> Ngày mai</li>
             </ul>
             <p>Click vào ngày để thay đổi trạng thái.</p>
+
+            
         </div>
     </div>
 
@@ -335,64 +339,69 @@
             }
 
             for (let day = 1; day <= daysInMonth; day++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.classList.add('day');
-                dayDiv.textContent = day;
-                const currentDate = new Date(year, month, day);
-                const dayKey = `${year}-${month + 1}-${day}`;
+    const dayDiv = document.createElement('div');
+    dayDiv.classList.add('day');
+    dayDiv.textContent = day;
+    const currentDate = new Date(year, month, day);
+    const dayKey = `${year}-${month + 1}-${day}`;
 
-                if (currentDate > date) dayDiv.classList.add('disabled');
-                const status = localStorage.getItem(dayKey);
-                if (status) dayDiv.classList.add(status);
+    // Chỉ cho phép chấm công cho ngày hôm nay hoặc những ngày đã qua
+    if (currentDate > date) {
+        dayDiv.classList.add('disabled');
+        dayDiv.style.cursor = 'not-allowed';
+    } else {
+        const status = localStorage.getItem(dayKey);
+        if (status) dayDiv.classList.add(status);
 
-                const overtime = localStorage.getItem(`${dayKey}-overtime`);
-                if (overtime) {
+        const overtime = localStorage.getItem(`${dayKey}-overtime`);
+        if (overtime) {
+            const overtimeDiv = document.createElement('div');
+            overtimeDiv.classList.add('overtime-hours');
+            overtimeDiv.textContent = `${overtime}`;
+            dayDiv.appendChild(overtimeDiv);
+        }
+
+        if (day === date.getDate()) dayDiv.classList.add('today');
+
+        dayDiv.addEventListener('click', function () {
+            if (dayDiv.classList.contains('disabled')) return;
+
+            if (dayDiv.classList.contains('ticked')) {
+                dayDiv.classList.remove('ticked');
+                dayDiv.classList.add('canceled');
+            } else if (dayDiv.classList.contains('canceled')) {
+                dayDiv.classList.remove('canceled');
+                dayDiv.classList.add('skipped');
+                const overtimeHours = prompt("Hôm nay như thế nào ?", ""); 
+                if (overtimeHours) {
                     const overtimeDiv = document.createElement('div');
                     overtimeDiv.classList.add('overtime-hours');
-                    overtimeDiv.textContent = `${overtime}`;
+                    overtimeDiv.textContent = `${overtimeHours}`;
                     dayDiv.appendChild(overtimeDiv);
+                    localStorage.setItem(`${dayKey}-overtime`, overtimeHours);
+                } else {
+                    alert("Không có thiết lập được nhập.");
+                    dayDiv.classList.remove('skipped', 'canceled', 'ticked');
+                    dayDiv.classList.add('day');
+                    const overtimeDiv = dayDiv.querySelector('.overtime-hours');
+                    if (overtimeDiv) overtimeDiv.remove();
+                    localStorage.removeItem(`${dayKey}-overtime`);
                 }
-
-                if (day === date.getDate()) dayDiv.classList.add('today');
-
-                dayDiv.addEventListener('click', function () {
-                    if (dayDiv.classList.contains('disabled')) return;
-
-                    if (dayDiv.classList.contains('ticked')) {
-                        dayDiv.classList.remove('ticked');
-                        dayDiv.classList.add('canceled');
-                    } else if (dayDiv.classList.contains('canceled')) {
-                        dayDiv.classList.remove('canceled');
-                        dayDiv.classList.add('skipped');
-                        const overtimeHours = prompt("Hôm nay như thế nào ?", ""); 
-                        if (overtimeHours) {
-                            const overtimeDiv = document.createElement('div');
-                            overtimeDiv.classList.add('overtime-hours');
-                            overtimeDiv.textContent = `${overtimeHours}`;
-                            dayDiv.appendChild(overtimeDiv);
-                            localStorage.setItem(`${dayKey}-overtime`, overtimeHours);
-                        } else {
-                            alert("Không có thiết lập được nhập.");
-                            dayDiv.classList.remove('skipped', 'canceled', 'ticked');
-                            dayDiv.classList.add('day');
-                            const overtimeDiv = dayDiv.querySelector('.overtime-hours');
-                            if (overtimeDiv) overtimeDiv.remove();
-                            localStorage.removeItem(`${dayKey}-overtime`);
-                        }
-                    } else if (dayDiv.classList.contains('skipped')) {
-                        dayDiv.classList.remove('skipped');
-                        const overtimeDiv = dayDiv.querySelector('.overtime-hours');
-                        if (overtimeDiv) overtimeDiv.remove();
-                        localStorage.removeItem(`${dayKey}-overtime`);
-                    } else {
-                        dayDiv.classList.add('ticked');
-                    }
-
-                    localStorage.setItem(dayKey, getCurrentStatus(dayDiv));
-                });
-
-                calendar.appendChild(dayDiv);
+            } else if (dayDiv.classList.contains('skipped')) {
+                dayDiv.classList.remove('skipped');
+                const overtimeDiv = dayDiv.querySelector('.overtime-hours');
+                if (overtimeDiv) overtimeDiv.remove();
+                localStorage.removeItem(`${dayKey}-overtime`);
+            } else {
+                dayDiv.classList.add('ticked');
             }
+
+            localStorage.setItem(dayKey, getCurrentStatus(dayDiv));
+        });
+    }
+
+    calendar.appendChild(dayDiv);
+}
 
             // Hiển thị trạng thái khóa
             const lockStatus = localStorage.getItem('locked');
