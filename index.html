@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtos_cQ1skjOq1pncEQFTj7fglhDSCF5OUIA&s">
-    <title>BCC-Giantsun</title>
+    <title>Bảng chấm công</title>
     <style>
         body, html {
             margin: 0;
@@ -188,57 +187,94 @@
             }
         }
 
-        /* Responsive: Small Screen */
-        @media (max-width: 480px) {
-            .calendar {
-                grid-template-columns: repeat(7, 1fr);
-                gap: 4px;
-            }
-
-            .day {
-                padding: 8px;
-                font-size: 12px;
-            }
-
-            .modal-content {
-                width: 95%;
-            }
-
-            .btn-guide {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
+        /* Dark Mode Styles */
+        body.darkmode {
+            background-color: #333;
+            color: #fff;
         }
 
+        .container.darkmode {
+            background-color: #444;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
 
-        .salary-section {
-    margin-top: 20px;
-    padding: 10px;
-    background: #f8f9fa;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-}
+        h1.darkmode {
+            color: #fff;
+        }
 
-.salary-section label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
+        .day.darkmode {
+            background-color: #555;
+            border: 1px solid #444;
+        }
 
-.salary-section input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
+        .day.header.darkmode {
+            background-color: #444;
+            color: white;
+        }
 
-.salary-section h3 {
-    text-align: center;
-    color: #007bff;
-}
+        .day.ticked.darkmode {
+            background-color: #28a745;
+            color: white;
+        }
 
+        .day.skipped.darkmode {
+            background-color: #ffc107;
+            color: white;
+        }
+
+        .day.canceled.darkmode {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .day.today.darkmode {
+            color: white;
+            font-weight: bold;
+        }
+
+        .day.disabled.darkmode {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        .overtime-hours.darkmode {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+
+        /* Dark Mode Button */
+        .btn-darkmode {
+            display: inline-flex;
+            align-items: center;
+            background-color: #5e9ee3;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Icon for Dark Mode */
+        #darkModeIcon {
+            margin-right: 60px;
+        }
+        .lock-status{
+            display: inline-flex;
+            align-items: center;
+            background-color: gray;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: auto;
+        }
     </style>
 </head>
 <body>
@@ -248,40 +284,29 @@
         <div id="calendar" class="calendar"></div>
         <a href="javascript:void(0)" class="btn-guide" id="guideBtn">Hướng dẫn sử dụng</a>
         <br>
-        <span id="status-summary" style="font-style: italic; display: block; margin-top: 10px;"></span>
-
-
-        <div class="salary-section">
-            <label for="daily-salary">Lương/ngày (VNĐ): </label>
-            <input type="number" id="daily-salary" placeholder="Nhập lương ngày" value="500000"><br>
-        
-            <label for="overtime-8h">Lương tăng ca 8h (VNĐ): </label>
-            <input type="number" id="overtime-8h" placeholder="Nhập lương tăng ca 8h" value="80000"><br>
-        
-            <label for="overtime-9h">Lương tăng ca 9h (VNĐ): </label>
-            <input type="number" id="overtime-9h" placeholder="Nhập lương tăng ca 9h" value="100000"><br>
-        
-            <h3 id="total-salary">Tổng lương: 0 VNĐ</h3>
-        </div>
-        
-        
+        <span style="font-style: italic;"></span>
+        <a href="javascript:void(0)" class="btn-darkmode" id="darkModeBtn">
+            <span id="darkModeIcon">🌙</span>
+        </a>
+        <div id="lockStatus" class="lock-status"></div>
     </div>
 
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
+            <h2></h2>
             <h2>Hướng dẫn sử dụng</h2>
             <ul>
                 <li><strong>Màu xanh:</strong> Đi làm (8h)</li>
                 <li><strong>Màu đỏ:</strong> Nghỉ</li>
-                <li><strong>Màu vàng:</strong> Tăng ca (8h hoặc 9h)</li>
+                <li><strong>Màu vàng:</strong> Tự thiết lập</li>
                 <li><strong>Màu trắng:</strong> Chưa thiết lập</li>
                 <li><strong>Màu xám:</strong> Ngày mai</li>
-                <li><strong>Icon cỏ bốn lá:</strong> Ngày hôm nay</li>
             </ul>
             <p>Click vào ngày để thay đổi trạng thái.</p>
         </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const calendar = document.getElementById('calendar');
@@ -292,9 +317,11 @@
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const firstDay = new Date(year, month, 1).getDay();
             const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-
-            calendarInfo.textContent = `${["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"][month]} ${year}`;
+            const lockStatusDiv = document.getElementById('lockStatus');
             
+            // Hiển thị thông tin tháng
+            calendarInfo.textContent = `${["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"][month]} ${year}`;
+             
             weekdays.forEach(day => {
                 const header = document.createElement('div');
                 header.classList.add('day', 'header');
@@ -322,7 +349,7 @@
                 if (overtime) {
                     const overtimeDiv = document.createElement('div');
                     overtimeDiv.classList.add('overtime-hours');
-                    overtimeDiv.textContent = `Tc: ${overtime}h`;
+                    overtimeDiv.textContent = `${overtime}`;
                     dayDiv.appendChild(overtimeDiv);
                 }
 
@@ -337,15 +364,15 @@
                     } else if (dayDiv.classList.contains('canceled')) {
                         dayDiv.classList.remove('canceled');
                         dayDiv.classList.add('skipped');
-                        const overtimeHours = prompt("Chọn số giờ tăng ca (8h hoặc 9h):", "8");
-                        if (overtimeHours === '8' || overtimeHours === '9') {
+                        const overtimeHours = prompt("Hôm nay như thế nào ?", ""); 
+                        if (overtimeHours) {
                             const overtimeDiv = document.createElement('div');
                             overtimeDiv.classList.add('overtime-hours');
-                            overtimeDiv.textContent = `Tc: ${overtimeHours}h`;
+                            overtimeDiv.textContent = `${overtimeHours}`;
                             dayDiv.appendChild(overtimeDiv);
                             localStorage.setItem(`${dayKey}-overtime`, overtimeHours);
                         } else {
-                            alert("Số giờ tăng ca không hợp lệ!");
+                            alert("Không có thiết lập được nhập.");
                             dayDiv.classList.remove('skipped', 'canceled', 'ticked');
                             dayDiv.classList.add('day');
                             const overtimeDiv = dayDiv.querySelector('.overtime-hours');
@@ -367,12 +394,28 @@
                 calendar.appendChild(dayDiv);
             }
 
-            const modal = document.getElementById("myModal");
-            const btn = document.getElementById("guideBtn");
-            const span = document.getElementsByClassName("close")[0];
-            btn.onclick = function() { modal.style.display = "block"; }
-            span.onclick = function() { modal.style.display = "none"; }
-            window.onclick = function(event) { if (event.target == modal) modal.style.display = "none"; }
+            // Hiển thị trạng thái khóa
+            const lockStatus = localStorage.getItem('locked');
+            if (lockStatus === 'true') {
+                lockStatusDiv.textContent = "Lịch đang bị khóa";
+                lockCalendar();
+            } else {
+                lockStatusDiv.textContent = "Lịch chưa bị khóa";
+            }
+
+            // Xử lý khóa lịch
+            lockStatusDiv.addEventListener('click', function () {
+                const isLocked = localStorage.getItem('locked') === 'true';
+                localStorage.setItem('locked', isLocked ? 'false' : 'true');
+                if (isLocked) {
+                    lockStatusDiv.textContent = "Lịch chưa bị khóa";
+                    unlockCalendar();
+                } else {
+                    lockStatusDiv.textContent = "Lịch đang bị khóa";
+                    lockCalendar();
+                }
+            });
+
         });
 
         function getCurrentStatus(dayDiv) {
@@ -382,235 +425,57 @@
             return '';
         }
 
+        function lockCalendar() {
+            const days = document.querySelectorAll('.day');
+            days.forEach(day => {
+                day.classList.add('disabled');
+                day.style.cursor = 'not-allowed';
+            });
+        }
+
+        function unlockCalendar() {
+            const days = document.querySelectorAll('.day');
+            days.forEach(day => {
+                day.classList.remove('disabled');
+                day.style.cursor = 'pointer';
+            });
+        }
+
 
         document.addEventListener('DOMContentLoaded', function () {
-    const calculateAndDisplayDays = () => {
-        const days = document.querySelectorAll('.day:not(.header)');
-        let white = 0, green = 0, red = 0, yellow8 = 0, yellow9 = 0;
+    const darkModeBtn = document.getElementById('darkModeBtn');
+    const darkModeIcon = document.getElementById('darkModeIcon');
+    const body = document.body;
+    const container = document.querySelector('.container');
+    const h1 = document.querySelector('h1');
+    const days = document.querySelectorAll('.day');
 
-        days.forEach(day => {
-            if (day.classList.contains('ticked')) {
-                green++;
-            } else if (day.classList.contains('canceled')) {
-                red++;
-            } else if (day.classList.contains('skipped')) {
-                const overtimeDiv = day.querySelector('.overtime-hours');
-                if (overtimeDiv) {
-                    const overtimeText = overtimeDiv.textContent;
-                    if (overtimeText.includes('8h')) {
-                        yellow8++;
-                    } else if (overtimeText.includes('9h')) {
-                        yellow9++;
-                    }
-                }
-            } else {
-                white++;
-            }
-        });
+    // Kiểm tra trạng thái Dark Mode trong LocalStorage và áp dụng
+    if (localStorage.getItem('darkmode') === 'enabled') {
+        body.classList.add('darkmode');
+        container.classList.add('darkmode');
+        h1.classList.add('darkmode');
+        days.forEach(day => day.classList.add('darkmode'));
+        darkModeIcon.textContent = '🌞'; // Hiển thị mặt trời khi chế độ tối đã được bật
+    }
 
-        // Cập nhật nội dung hiển thị
-        const summary = `
-            Chưa thiết lập: ${white} | 
-            Ngày làm bình thường: ${green} | 
-            Ngày nghỉ: ${red} | 
-            Tăng ca (8h): ${yellow8} | 
-            Tăng ca (9h): ${yellow9}
-        `;
-        document.getElementById('status-summary').textContent = summary;
-    };
+    // Thêm sự kiện khi nhấn nút Dark Mode
+    darkModeBtn.addEventListener('click', function () {
+        body.classList.toggle('darkmode');
+        container.classList.toggle('darkmode');
+        h1.classList.toggle('darkmode');
+        days.forEach(day => day.classList.toggle('darkmode'));
 
-    // Gọi hàm khi tải trang
-    calculateAndDisplayDays();
-
-    // Gọi hàm mỗi khi trạng thái ngày thay đổi
-    const calendar = document.getElementById('calendar');
-    calendar.addEventListener('click', function (event) {
-        if (event.target.classList.contains('day') && !event.target.classList.contains('disabled')) {
-            calculateAndDisplayDays();
+        // Lưu trạng thái Dark Mode vào LocalStorage
+        if (body.classList.contains('darkmode')) {
+            localStorage.setItem('darkmode', 'enabled');
+            darkModeIcon.textContent = '🌞'; // Chuyển sang mặt trời khi bật chế độ tối
+        } else {
+            localStorage.setItem('darkmode', 'disabled');
+            darkModeIcon.textContent = '🌙'; // Chuyển về mặt trăng khi tắt chế độ tối
         }
     });
 });
-
-
-
-document.addEventListener('DOMContentLoaded', function () {
-        const dailySalaryInput = document.getElementById('daily-salary');
-        const overtime8hInput = document.getElementById('overtime-8h');
-        const overtime9hInput = document.getElementById('overtime-9h');
-
-        // Hàm lưu lương vào LocalStorage
-        const saveSalarySettings = () => {
-            localStorage.setItem('dailySalary', dailySalaryInput.value);
-            localStorage.setItem('overtime8h', overtime8hInput.value);
-            localStorage.setItem('overtime9h', overtime9hInput.value);
-        };
-
-        // Hàm tải lương từ LocalStorage
-        const loadSalarySettings = () => {
-            const dailySalary = localStorage.getItem('dailySalary');
-            const overtime8h = localStorage.getItem('overtime8h');
-            const overtime9h = localStorage.getItem('overtime9h');
-
-            if (dailySalary !== null) dailySalaryInput.value = dailySalary;
-            if (overtime8h !== null) overtime8hInput.value = overtime8h;
-            if (overtime9h !== null) overtime9hInput.value = overtime9h;
-        };
-
-        // Gọi hàm tải lương khi tải trang
-        loadSalarySettings();
-
-        // Lưu lương mỗi khi người dùng thay đổi giá trị
-        dailySalaryInput.addEventListener('input', saveSalarySettings);
-        overtime8hInput.addEventListener('input', saveSalarySettings);
-        overtime9hInput.addEventListener('input', saveSalarySettings);
-
-        const calculateAndDisplaySalary = () => {
-            const dailySalary = parseFloat(dailySalaryInput.value) || 0;
-            const overtime8h = parseFloat(overtime8hInput.value) || 0;
-            const overtime9h = parseFloat(overtime9hInput.value) || 0;
-
-            const days = document.querySelectorAll('.day:not(.header)');
-            let normalDays = 0, overtime8Days = 0, overtime9Days = 0;
-
-            days.forEach(day => {
-                if (day.classList.contains('ticked')) {
-                    normalDays++;
-                } else if (day.classList.contains('skipped')) {
-                    const overtimeDiv = day.querySelector('.overtime-hours');
-                    if (overtimeDiv) {
-                        const overtimeText = overtimeDiv.textContent;
-                        if (overtimeText.includes('8h')) {
-                            overtime8Days++;
-                        } else if (overtimeText.includes('9h')) {
-                            overtime9Days++;
-                        }
-                    }
-                }
-            });
-
-            // Tính tổng lương
-            const totalSalary = (normalDays * dailySalary) + (overtime8Days * overtime8h) + (overtime9Days * overtime9h);
-            document.getElementById('total-salary').textContent = `Tổng lương: ${totalSalary.toLocaleString()} VNĐ`;
-        };
-
-        // Gọi hàm tính lương khi giá trị thay đổi
-        dailySalaryInput.addEventListener('input', calculateAndDisplaySalary);
-        overtime8hInput.addEventListener('input', calculateAndDisplaySalary);
-        overtime9hInput.addEventListener('input', calculateAndDisplaySalary);
-
-        const calendar = document.getElementById('calendar');
-        calendar.addEventListener('click', function (event) {
-            if (event.target.classList.contains('day') && !event.target.classList.contains('disabled')) {
-                calculateAndDisplaySalary();
-            }
-        });
-
-        // Gọi hàm tính lương khi tải trang
-        calculateAndDisplaySalary();
-    });
-
-
-// Kiểm tra quyền thông báo
-function requestNotificationPermission() {
-    if (Notification.permission !== 'granted') {
-        Notification.requestPermission().then(permission => {
-            if (permission === 'granted') {
-                console.log('Thông báo được cho phép.');
-            } else {
-                console.log('Thông báo bị từ chối.');
-            }
-        });
-    }
-}
-
-
-
-// Gửi thông báo đi làm bình thường
-function sendNotification() {
-    const title = "Thông báo chấm công";
-    const options = {
-        body: "Bạn có đi làm hôm nay không ? nếu có xin hãy chấm công",
-        icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtos_cQ1skjOq1pncEQFTj7fglhDSCF5OUIA&s"
-    };
-
-    if (Notification.permission === 'granted') {
-        new Notification(title, options);
-    }
-}
-
-// Gửi thông báo đi làm bình thường tăng ca 8h
-function sendNotification8() {
-    const title8 = "Thông báo chấm công";
-    const options8 = {
-        body: "Bạn có tăng ca ngày hôm nay không ? nếu có xin hãy thay đổi",
-        icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtos_cQ1skjOq1pncEQFTj7fglhDSCF5OUIA&s"
-    };
-
-    if (Notification.permission === 'granted') {
-        new Notification(title8, options8);
-    }
-}
-
-
-// Gửi thông báo đi làm bình thường tăng ca 9h
-function sendNotification9() {
-    const title9 = "Thông báo chấm công";
-    const options9 = {
-        body: "Bạn có làm thêm đến 9h tối không ? nếu có xin hãy thay đổi",
-        icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtos_cQ1skjOq1pncEQFTj7fglhDSCF5OUIA&s"
-    };
-
-    if (Notification.permission === 'granted') {
-        new Notification(title9, options9);
-    }
-}
-
-
-
-// Kiểm tra thời gian để gửi thông báo đi làm
-function scheduleNotification() {
-    setInterval(() => {
-        const now = new Date();
-        if (now.getHours() === 8 && now.getMinutes() === 0) {
-            sendNotification();
-        }
-    }, 60000); // Kiểm tra mỗi phút
-}
-
-
-
-// Kiểm tra thời gian để gửi thông báo đi làm 8h
-function scheduleNotification8() {
-    setInterval(() => {
-        const now = new Date();
-        if (now.getHours() === 17 && now.getMinutes() === 0) {
-            sendNotification8();
-        }
-    }, 60000); // Kiểm tra mỗi phút
-}
-
-
-// Kiểm tra thời gian để gửi thông báo đi làm 9h
-function scheduleNotification9() {
-    setInterval(() => {
-        const now = new Date();
-        if (now.getHours() === 20 && now.getMinutes() === 5) {
-            sendNotification9();
-        }
-    }, 60000); // Kiểm tra mỗi phút
-}
-
-
-
-
-// Gọi hàm khi tải trang
-document.addEventListener('DOMContentLoaded', function () {
-    requestNotificationPermission();
-    scheduleNotification();
-    scheduleNotification8();
-    scheduleNotification9();
-});
-
 
     </script>
 </body>
